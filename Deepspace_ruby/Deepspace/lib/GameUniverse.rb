@@ -24,7 +24,7 @@ class GameUniverse
   end
 
   def getUIversion
-    GameUniverseToUI.new(self)
+    GameUniverseToUI.new(@currentStation, @currentEnemy)
   end
 
   def discardHangar

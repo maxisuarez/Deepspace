@@ -14,7 +14,16 @@ class Hangar
   end
 
   def self.newCopy(copy)
-    Hangar.new(copy.maxElements)
+    nuevo = new(copy.maxElements)
+    for i in 0...copy.weapons.length
+      nuevo.addWeapon(copy.weapons[i])  
+    end
+    
+    copy.shieldBoosters.each{|elem|
+      nuevo.addShieldBooster(elem)
+    }   
+    
+    return nuevo    
   end
 
   def getUIversion
@@ -40,7 +49,7 @@ class Hangar
   end
 
    def removeShieldBooster(s)
-    @shieldBoosters.delete_at(s)
+    @shieldBoosters.delete_at(s)   
   end
 
   def to_s

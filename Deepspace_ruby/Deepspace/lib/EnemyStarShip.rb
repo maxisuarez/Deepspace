@@ -13,7 +13,7 @@ class EnemyStarShip
   end
   
   def self.newCopy(copy)
-    EnemyStarShip.new(copy.n, copy.a, copy.s, copy.l, copy.d)
+    EnemyStarShip.new(copy.name, copy.ammoPower, copy.shieldPower, copy.loot, copy.damage)
   end
   
   def getUIversion()

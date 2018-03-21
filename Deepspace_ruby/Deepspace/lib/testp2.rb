@@ -139,7 +139,7 @@ module Testp2
     puts "\nmove"
     pp station1.move
     pp station1
-    
+=begin
     puts "\nDiscard in hangar"
     h1.addWeapon(w2)
     station1.discardWeaponInHangar(0)
@@ -150,10 +150,30 @@ module Testp2
     station1.cleanUpMountedItems
     pp station1
     
-      puts "Valid state: #{station1.validState}"
-    
+   puts "Valid state: #{station1.validState}"
+=end
 
-    
+   puts "\nCopias: "
+   pp d2
+   pp Deepspace::Damage.newCopy(d2)
+   
+   pp e2
+   pp Deepspace::EnemyStarShip.newCopy(e2)
+   
+   pp w2
+   pp Deepspace::Weapon.newCopy(w2)
+   
+   pp s1
+   pp Deepspace::ShieldBooster.newCopy(s1)
+   
+   puts "\nCopia hangar:"
+   pp h1
+   pp Deepspace::Hangar.newCopy(h1)
+   
+   
+   
+   
+     
     
     end
   end
