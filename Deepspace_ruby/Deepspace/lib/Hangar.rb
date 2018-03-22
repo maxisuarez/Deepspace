@@ -45,11 +45,19 @@ class Hangar
   end
 
   def removeWeapon(w)
-     @weapons.delete_at(w)
+    if w >= 0 && w < @weapons.length
+      return @weapons.delete_at(w)
+    else
+      return nil
+    end      
   end
 
    def removeShieldBooster(s)
-    @shieldBoosters.delete_at(s)   
+     if s >=0 && s < @shieldBoosters.length
+      return @shieldBoosters.delete_at(s)   
+     else
+       return nil
+     end
   end
 
   def to_s

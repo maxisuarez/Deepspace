@@ -9,7 +9,7 @@ class EnemyStarShip
     @name = n
     @shieldPower = s
     @loot = l
-    @damage = d
+    @damage = Damage.newCopy(d)
   end
   
   def self.newCopy(copy)

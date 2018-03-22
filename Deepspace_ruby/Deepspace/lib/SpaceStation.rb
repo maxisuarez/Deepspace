@@ -59,7 +59,7 @@ class SpaceStation
   end
 
   def setPendingDamage(d)
-    @pendingDamage = d
+    @pendingDamage = d.adjust(@weapons, @shieldBoosters)
   end
 
   def mountWeapon(i)
@@ -141,7 +141,7 @@ class SpaceStation
 
   end
 
-  def proteccion
+  def protection
 
   end
 

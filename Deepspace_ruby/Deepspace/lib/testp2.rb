@@ -170,6 +170,7 @@ module Testp2
    pp h1
    pp Deepspace::Hangar.newCopy(h1)
    
+    pp w1.type
    
    
    

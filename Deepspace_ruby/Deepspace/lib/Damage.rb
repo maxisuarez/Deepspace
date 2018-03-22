@@ -10,7 +10,11 @@ class Damage
   def initialize(nweapons, nshields,weapons)
     @nShields=nshields
     @nWeapons=nweapons
-    @weapons = weapons
+    if(weapons != nil)
+      @weapons = Array.new(weapons)
+    else
+      @weapons = nil
+    end
   end
 
   def self.newNumericWeapons(w, s)
@@ -52,7 +56,10 @@ class Damage
     
   def discardWeapon(w)
     if @nWeapons == -1 #Entonces es específico
-      @weapons.delete(w.type)
+      i = @weapons.index(w.type)
+      if i != nil
+        @weapons.delete_at(i)
+      end
     else
       if @nWeapons > 0 
         @nWeapons -= 1
