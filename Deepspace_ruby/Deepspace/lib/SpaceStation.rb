@@ -95,11 +95,11 @@ class SpaceStation
   end
 
   def getSpeed
-    return @fuelUnits / @@MAXFUEL
+    return @fuelUnits.to_f / @@MAXFUEL
   end
 
   def move
-    @fuelUnits -= getSpeed * @fuelUnits
+    @fuelUnits -= getSpeed * @fuelUnits.to_f 
   end
 
   def validState
