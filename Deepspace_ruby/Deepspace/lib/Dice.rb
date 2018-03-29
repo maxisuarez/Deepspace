@@ -32,7 +32,7 @@ class Dice
     end
   end
   
-  def initWithShields
+  def initWithNShields
     if @generator.rand(1.0) <= @NSHIELDSPROB
       return 0
     else
