@@ -8,7 +8,7 @@ class SpaceStation
   @@MAXFUEL=100
   @@SHIELDLOSSPERUNITSHOT=0.1
 
-  attr_reader :ammoPower, :fuelUnits, :name, :nMedals, :shieldPower
+  attr_reader :ammoPower, :fuelUnits, :name, :nMedals, :shieldPower, :hangar
 
   def initialize(n,s)
     @name = n
