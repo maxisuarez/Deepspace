@@ -99,7 +99,7 @@ class SpaceStation
   end
 
   def move
-    @fuelUnits -= getSpeed * @fuelUnits.to_f 
+    @fuelUnits -= getSpeed * @fuelUnits.to_f
   end
 
   def validState
@@ -137,29 +137,90 @@ class SpaceStation
   end
 
   #Para la siguiente práctica
-  def fire
+    def fire
+      size = @weapons.length
+      factor = 1
+      for i in 0...size
+        factor *= @weapons[i].useIt
+      end
 
-  end
+      return @ammoPower*factor
+    end
 
-  def protection
+    def protection
+      size = @shieldBoosters.length
+      factor = 1
+      for i in 0...size
+        factor *= @shieldBoosters[i].useIt
+      end
+      return @shieldPower*factor
+    end
 
-  end
+    def receiveShot(shot)
+      myProtection = @currentStation.protection
+      if(myProtection >= shot)
+        @shieldPower -= @@SHIELDLOSSPERUNITSHOOT * shot
+        @shieldPower = [0.0,@shieldPower].max
+        return ShotResult::RESIST
+      else
+        @shieldPower = 0.0
+        return ShotResult::DONOTRESIST
+      end
+    end
 
-  def receiveShot(shot)
+    def setLoot(loot)
+      dealer = CardDealer.new
+      h = loot.nHangars
+      if h > 0
+        hangar = dealer.nextHangar
+        receiveHangar(hangar)
+      end
 
-  end
+      elements = loot.nSupplies
+      for i in 1..elements
+        sup = dealer.nextSuppliesPackage
+        receiveSupplies(sup)
+      end
 
-  def setLoot(loot)
+      elements = loot.nWeapons
+      for i in 1..elements
+        weap = dealer.nextWeapon
+        receiveWeapon(weap)
+      end
 
-  end
+      elements = loot.nShields
+      for i in 1..elements
+        sh = dealer.nextShieldBooster
+        receiveShieldBooster(sh)
+      end
 
-  def discardWeapon(i)
+      medals = loot.nMedals
+      @nMedals += medals
+    end
 
-  end
 
-  def discardShieldBooster(i)
+    def discardWeapon(i)
+      size = @weapons.length
+      if i >= 0 && i < size
+        w = @weapons.delete_at(i)
+        if @pendingDamage != nil
+          @pendingDamage.discardWeapon(w)
+          @currentstation.cleanPendingDamage
+        end
+      end
+    end
 
-  end
+    def discardShieldBooster(i)
+       size = @shieldBoosters.length
+      if i >= 0 && i < size
+        s = @shieldBoosters.delete_at(i)
+        if @pendingDamage != nil
+          @pendingDamage.discardShieldBooster(s)
+          @currentstation.cleanPendingDamage
+        end
+      end
+
+    end
 
   def to_s
      return "Name #{@name} AmmoPower: #{@ammoPower} FuelUnits: #{@fuelUnits}

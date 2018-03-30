@@ -70,13 +70,101 @@ class GameUniverse
   end
 
   #Proxima practica
-  def init(names)
+    def init(names)
+      state = @gameState.state
 
-  end
+      if state == GameState::CANNOTPLAY
+        spaceStations = SpaceStation.new
+        dealer = CardDealer.new
 
-  def nextTurn
+        for i in 1..names.length
+          supplies = dealer.nextSuppliesPackage
+          station = SpaceStation.new(names[i-1], supplies)
+          nh = @dice.initWithNHangars
+          nw = @dice.initWithNWeapons
+          ns = @dice.initWithShields
+          l = Loot.new(0, nw, ns, nh, 0)
+          station.setLoot(l)
+        end
 
-  end
+        @currentStationIndex = @dice.whoStarts(names.length)
+        @currentStation = @spaceStations[@currentStationIndex]
+        @currentEnemy = dealer.nextEnemy
+
+        @gameState.next(@turns, @spaceStations.size)
+
+        end
+     end
+
+    def nextTurn
+      gameState = @gameState.state
+
+      if gameState == GameState::AFTERCOMBAT
+        stationState = @currentStation.validState
+        if stationState
+          @currentStationIndex = (@currentStationIndex+1) % @spaceStations.size
+          @turns += 1
+
+          @currentStation = @spaceStations[@currentStationIndex]
+          @currentStation.cleanUpMountedItems
+          dealer = CardDealer.new
+          @currentEnemy = dealer.nextEnemy
+          @gameState.next(@turns, @spaceStations.size)
+
+          return true
+        end
+        return false
+      end
+      return false
+    end
+
+    def combat
+      state = @gameState.state
+
+      if state == GameState::BEFORECOMBAT || state == GameState::init
+        combatGo(@currenStation, @currentEnemy)
+        ch = @dice.firstShot
+        if ch == GameCharacter::ENEMYSTARSHIP
+          fire = @currentEnemy.fire
+          result = @currentStation.receiveShot(fire)
+
+          if result == ShotResult::RESIST
+            fire = @currentStation.fire
+            result = @currentEnemy.receiveShot(fire)
+            enemyWins = (result == ShotResult::RESIST)
+          else
+            enemyWins = true
+          end
+        else
+          fire = @currentStation.fire
+          result = @currentEnemy.receiveShot(fire)
+          enemyWins = (result == ShotResult::RESIST)
+        end
+
+        if enemyWins
+          s = @currentStation.getSpeed
+          moves = @dice.spaceStationMoves(s)
+          if !moves
+            damage = @currentEnemy.damage
+            @currentStation.setPendingDamage(damage)
+            combatResult = CombatResult::ENEMYWINS
+          else
+            @currentStation.move
+            combatResult = CombatResult::STATIONSCAPES
+          end
+        else
+          aLoot = @currentEnemy.loot
+          @currentStation.setLoot(aLoot)
+          combatResult = CombatResult::STATIONWINS
+        end
+
+        @gameState.next(@turns, @spaceStations.size)
+
+        return combatResult
+      else
+        return CombatResult::NOCOMBAT
+      end
+    end
 
   def to_s
       return "\nIndex: #{@currentStationIndex} + Turns: #{@turns}"
