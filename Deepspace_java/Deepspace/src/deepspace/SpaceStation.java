@@ -7,6 +7,7 @@ package deepspace;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
+import java.lang.Math.*;
 
 /**
  *
@@ -161,22 +162,87 @@ public class SpaceStation {
       shieldBoosters.removeIf(shieldPredicate);      
     }
     
-    public float fire() { throw new UnsupportedOperationException(); }
-    public float protection() { throw new UnsupportedOperationException(); }
-    public ShotResult receiveShot(float shot) { throw new UnsupportedOperationException(); }
-    public void setLoot(Loot loot) { throw new UnsupportedOperationException(); }
-    public void discardWeapon(int i) { throw new UnsupportedOperationException(); }
-    public void discardShieldBooster(int i) { throw new UnsupportedOperationException(); }
+    public float fire() { 
+        int size = weapons.size();
+        float factor = 1;
+        for (int i = 0; i < size; i++) {
+            factor *= weapons.get(i).useIt();
+        }        
+        return factor;  
+    }
+    
+    public float protection() { 
+        int size = shieldBoosters.size();
+        float factor = 1;
+        for (int i = 0; i < size; i++) {
+            factor *= shieldBoosters.get(i).useIt();
+        }        
+        return factor;
+    }
+    
+    public ShotResult receiveShot(float shot) { 
+        float myProtection = protection();
+        if(myProtection >= shot) {
+            shieldPower -= SHIELDLOSSPERUNITSHOT * shot;
+            shieldPower = (float) Math.max(0.0,shieldPower); //Hay que hacer un cast, sino da error de conversion ya que max devuelve double
+            return ShotResult.RESIST;
+        } else {
+            shieldPower = (float) 0.0;
+            return ShotResult.DONOTRESIST;
+        }   
+    }
+    public void setLoot(Loot loot) { 
+        CardDealer dealer = CardDealer.getInstance();
+        int h = loot.getNHangars();
+        if(h > 0) {
+            Hangar hangar = dealer.nextHangar();
+            receiveHangar(hangar);
+        }
+        
+        int elements = loot.getNSupplies();
+        for(int i = 0; i < elements; i++) {
+            SuppliesPackage sup = dealer.nextSuppliesPackage();
+            receiveSupplies(sup);
+        }
+        
+        elements = loot.getNWeapons();
+        for(int i = 0; i < elements; i++) {
+            Weapon weap = dealer.nextWeapon();
+            receiveWeapon(weap);
+        }
+        
+        elements = loot.getNShields();
+        for(int i = 0; i < elements; i++) {
+            ShieldBooster sh = dealer.nextShieldBooster();
+            receiveShieldBooster(sh);
+        }
+        
+        int medals = getNMedals();
+        nMedals += medals;    
+    }
+    
+    public void discardWeapon(int i) { 
+        int size = weapons.size();
+        if(i >= 0 && i < size) {
+            Weapon w = weapons.remove(i);
+            if(pendingDamage != null) {
+                pendingDamage.discardWeapon(w);
+                cleanPendingDamage();
+            }
+        }
+    }    
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    public void discardShieldBooster(int i) { 
+        int size = shieldBoosters.size();
+        if(i >= 0 && i < size) {
+            ShieldBooster s = shieldBoosters.remove(i);
+            if(pendingDamage != null) {
+                pendingDamage.discardShieldBooster();
+                cleanPendingDamage();                
+            }
+        }    
+    }   
+       
     
 }

@@ -46,7 +46,7 @@ public class Damage {
     }
       
     
-    //PUEDE NO FUNCIONAR
+    
     public Damage adjust(ArrayList<Weapon> w, ArrayList<ShieldBooster> s) {
      //Primero miramos si es numérico o armas concretas el arma
         if (nWeapons == -1) {//Entonces es específico

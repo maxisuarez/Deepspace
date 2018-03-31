@@ -139,7 +139,7 @@ class SpaceStation
   #Para la siguiente práctica
     def fire
       size = @weapons.length
-      factor = 1
+      factor = 1.to_f
       for i in 0...size
         factor *= @weapons[i].useIt
       end
@@ -149,7 +149,7 @@ class SpaceStation
 
     def protection
       size = @shieldBoosters.length
-      factor = 1
+      factor = 1.to_f
       for i in 0...size
         factor *= @shieldBoosters[i].useIt
       end
@@ -205,7 +205,7 @@ class SpaceStation
         w = @weapons.delete_at(i)
         if @pendingDamage != nil
           @pendingDamage.discardWeapon(w)
-          @currentstation.cleanPendingDamage
+          cleanPendingDamage
         end
       end
     end
@@ -215,8 +215,8 @@ class SpaceStation
       if i >= 0 && i < size
         s = @shieldBoosters.delete_at(i)
         if @pendingDamage != nil
-          @pendingDamage.discardShieldBooster(s)
-          @currentstation.cleanPendingDamage
+          @pendingDamage.discardShieldBooster
+          cleanPendingDamage
         end
       end
 
