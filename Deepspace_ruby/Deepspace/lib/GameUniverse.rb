@@ -74,8 +74,7 @@ class GameUniverse
       state = @gameState.state
 
       if state == GameState::CANNOTPLAY
-        spaceStations = SpaceStation.new
-        dealer = CardDealer.new
+        dealer = CardDealer.getInstance
 
         for i in 1..names.length
           supplies = dealer.nextSuppliesPackage
@@ -85,6 +84,7 @@ class GameUniverse
           ns = @dice.initWithShields
           l = Loot.new(0, nw, ns, nh, 0)
           station.setLoot(l)
+          @spaceStations.push(station)
         end
 
         @currentStationIndex = @dice.whoStarts(names.length)
